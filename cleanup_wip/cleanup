@@ -1,0 +1,237 @@
+#!/bin/bash                                                                            
+#################################################################################
+#                                                                               #
+#   cleanup-0.2    -    Cleans up a folder                                      #
+#										#
+#   Exit status:								#
+#   0 - All is good and well							#
+#   10 - WORKING_DIRECTORY does not exist                                       #
+#                                                                               #
+#                                                                               #
+#   Change log:                                                                 #
+#                                                                               #
+#   0.2 - 24/8/14                                                               #
+#      Working changes to perfom actions not just list them                     #
+#                                                                               #
+#   0.1 - 21/08/14:                                                             #
+#      Initial version - no functionality just output of actions                #
+#                                                                               #
+#################################################################################
+#                                                                               #
+#                                                                               #
+#   PROTOTYPE                                 ( v0.2  -  24/08/14 10:19 GMT )   #
+#                                                                               #
+#      Enters set directory and sorts files into relevent sub-directories       #
+#                                                                               #
+#                                                                               #
+#################################################################################
+
+
+
+#################################################################################
+#                                                                               #
+#   SETTINGS  -  BEGIN                                                          #
+#                                                                               #
+#################################################################################
+
+# LOGGING	                                                                #								
+#################################################################################
+
+# LOG_LOCATION									#
+# 										#
+# Sets default log location if not specified in parameters			#
+#										#
+# DEFAULT : ~/var/logs/cleanup							#
+
+LOG_LOCATION=~/.var/logs/cleanup							
+
+
+# LOG_BASE_NAME									#
+#										#
+# Sets default base name of log file if not specified in parameters		#
+# Date and time the script ended will be appended to the end of the filename	#
+#      	   	    	   	      	 	     	     	    		#
+# DEFAULT : cleanup								#
+
+LOG_BASE_NAME=cleanup
+
+
+# LOG_LEVEL									#
+#										#
+# Sets the default log level if not specified in parameters			#
+# Levels:									#
+#    1 = Successfully movedfiles, unmoved files, and errors logged		#
+#    2 = Only successfully moved files and errors logged  			#
+#    3 = Only unmoved files and errors logged					#
+#    4 = Only successfully moved files logged					#
+#    5 = Only unmoved files are logged 						#
+#    6 = Only errors are logged							#
+#    7 = No logging  	 							#
+#										#
+# DEFAULT : 1									#
+
+LOG_LEVEL=1
+
+
+# Location 
+################################################################################
+
+# WORKING_DIRECTORY                                                            #
+#                                                                              #
+# Sets default working directory when not specified in parameters              #
+#									       #
+# DEFAULT : ~/Downloads							       #
+
+WORKING_DIRECTORY=~/.dunloads
+
+
+################################################################################
+#                                                                              #
+#   SETTINGS  -  END							       #
+#									       #
+################################################################################
+
+
+
+################################################################################
+#									       #
+#  PRELIMINARIES							       #
+#									       #
+################################################################################
+
+NOW=$(date +"%d%m%Y-%H%M%S")
+
+# Check WORKING_DIRECTORY exists and move to it, else report (and if necessary
+# log) that WORKING_DERECTORY exists and exit with status 1
+
+if [ ! -d "$WORKING_DIRECTORY" ]; then
+     
+     #WORKING_DIRECTORY does not exist so exit with status 1
+     echo "$WORKING_DIRECTORY does not exist!"
+     exit 10
+
+fi
+
+cd $WORKING_DIRECTORY
+
+echo -e "\nWorking directory: $(pwd)\n"
+
+
+# Check that required subdirectories exist and create them if they don't
+
+if [ ! -d "compressed" ]; then
+  echo mkdir compressed
+fi
+
+if [ ! -d "debs" ]; then
+   echo mkdir debs
+fi
+
+if [ ! -d "torrents" ]; then
+   echo mkdir torrents
+fi
+
+if [ ! -d "texts" ]; then
+   echo mkdir texts
+fi
+
+if [ ! -d "archpkgs" ]; then
+    echo mkdir archpkgs
+fi
+
+if [ ! -d "torrents" ]; then
+    echo mkdir torrents
+fi
+
+if [ ! -d "debs" ]; then
+    echo mkdir debs
+fi
+
+echo
+
+################################################################################
+#                                                                              #
+# Do the business                                                              #
+#                                                                              #
+################################################################################
+
+
+for file in *; do
+
+    #echo $(ls -l "$file" )
+    #echo "$file"
+    
+     DASH="-"
+     COLON=":"
+     DIRECT_ARROW="-->"
+     FROM="./$file"
+     OPEN_PEREN="("
+     CLOSE_PEREN=")"
+    case "$file" in
+	*.tar.bz2)
+	    END=".tar.bz2"
+	    TYPE="compressed"
+	    ACTION="MOVE"
+	    DESTINATION="./compressed/$file"
+	    #printf '%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    OUTPUT='%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    printf $OUTPUT
+	    echo $OUTPUT >> ~/var/log/$LOG_BASE_NAME-$NOW
+	    ;;
+	*.tar.gz)
+	    END=".tar.gz"
+	    TYPE="compressed"
+	    ACTION="MOVE"
+	    DESTINATION="./compressed/$file"
+	    #printf '%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    OUTPUT='%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    printf $OUTPUT
+            echo $OUTPUT >> ~/var/log/$LOG_BASE_NAME-$NOW
+            ;;
+	.pkg.tar.xz)
+	    END=".pkg.tar.xz"
+	    TYPE="arch pkg"
+            ACTION="MOVE"
+            DESINATION="./archpkgs/$file"
+            #printf '%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    OUTPUT='%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    printf $OUTPUT
+            echo $OUTPUT >> ~/var/log/$LOG_BASE_NAME-$NOW
+            ;;
+	*.txt)
+	    END=".txt"
+	    TYPE="text"
+            ACTION="MOVE"
+            DESTINATION="./texts/$file"
+            #printf '%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    OUTPUT='%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    printf $OUTPUT
+            echo $OUTPUT >> ~/var/log/$LOG_BASE_NAME-$NOW
+            ;;
+	*.torrent)
+            END=".torrent"
+	    TYPE="torrent"
+            ACTION="MOVE"
+            DESTINATION="./torrents/$file"
+            #printf '%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    OUTPUT='%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    printf $OUTPUT
+            echo $OUTPUT >> ~/var/log/$LOG_BASE_NAME-$NOW
+            ;;
+	*.deb)
+            END=".deb"
+            TYPE="UBUNTU DEB"
+            ACTION="MOVE"
+            DESTINATION="./debs/$file"
+            #printf '%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    OUTPUT='%-10s %-2s%-10s%2s %3s %4s %3s %-60s %-6s %-s\n' "$END" "$OPEN_PEREN" "$TYPE" "$CLOSE_PEREN" "$DASH" "$ACTION" "$COLON" "$FROM" "$DIRECT_ARROW" "$DESTINATION"
+	    printf $OUTPUT
+            echo $OUTPUT >> ~/var/log/$LOG_BASE_NAME-$NOW
+            ;;
+	*)
+	    ;;
+    esac
+
+done
+
+

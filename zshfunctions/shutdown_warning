@@ -1,0 +1,19 @@
+#!/bin/zsh
+if [[ -a ~/.warning ]]
+   then
+      print
+      print -P "%B%F{red}############################################################";
+      print -P "%B%F{red}#                                                          #";
+      print -P "%B%F{red}#                  * * * WARNING * * *                     #";
+      print -P "%B%F{red}#                                                          #";
+      print -P "%B%F{red}#%B%F{yellow}   You have an unresolved issue that needs attending to  %F{red} #";
+      print -P "%B%F{red}#%B%F{yellow}   before shutdown can commence ....                      %F{red}#";
+      print -P "%B%F{red}#                                                          #";
+      print -P "%B%F{red}############################################################";
+      print -P "%B%F{white}"
+      cat ~/.warning
+      print -P "%f%b"
+   else
+      shutdown -h now
+fi
+
