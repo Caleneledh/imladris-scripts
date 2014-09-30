@@ -2,7 +2,7 @@
 #										#
 #  Imladris Scripts								#
 #										#
-#  A selection of (useful?) scritps and functions				#
+#  A selection of (useful?) scripts and functions				#
 #    	       	  	    	    						#
 #################################################################################		
 
