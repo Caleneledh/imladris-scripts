@@ -1,0 +1,21 @@
+#!/bin/zsh
+
+increase_gamma() {
+    GAMMA_TEMP=$GAMMA_CURRENT
+   (( GAMMA_CURRENT=$GAMMA_TEMP+0.1 ))
+    xgamma -gamma $GAMMA_CURRENT
+    #echo $GAMMA_CURRENT
+}
+
+decrease_gamma() {
+    GAMMA_TEMP=$GAMMA_CURRENT
+   (( GAMMA_CURRENT=$GAMMA_TEMP-0.1 ))
+    xgamma -gamma $GAMMA_CURRENT
+    #echo $GAMMA_CURRENT
+}
+
+reset_gamma() {
+    GAMMA_CURRENT=$GAMMA_DEFAULT
+    xgamma -gamma $GAMMA_DEFAULT
+}
+
